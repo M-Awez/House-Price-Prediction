@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>House Price Prediction</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            padding: 40px 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 17px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 35px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            color: #93c5fd;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+            background: #f8fafc;
+            color: #111827;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.4);
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 45px;
+            border: none;
+            border-radius: 12px;
+            background: #2563eb;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            text-align: center;
+            border-radius: 15px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .result p {
+            color: #bbf7d0;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .result h2 {
+            color: #4ade80;
+            font-size: 36px;
+        }
+
+        .error {
+            margin-top: 20px;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.15);
+            color: #fecaca;
+        }
+
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        @media (max-width: 850px) {
+
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <h1>🏠 House Price Prediction</h1>
+
+        <p>
+            Multiple Linear Regression Based House Price Prediction System
+        </p>
+
+    </div>
+
+
+    <!-- Main Card -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Enter Property Details
+        </h2>
+
+
+        <form action="/predict" method="POST">
+
+
+            <div class="form-grid">
+
+
+                <!-- Date -->
+
+                <div class="input-group">
+
+                    <label for="date">
+                        Property Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Bedrooms -->
+
+                <div class="input-group">
+
+                    <label for="bedrooms">
+                        Number of Bedrooms
+                    </label>
+
+                    <input
+                        type="number"
+                        id="bedrooms"
+                        name="bedrooms"
+                        placeholder="Example: 3"
+                        step="any"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Bathrooms -->
+
+                <div class="input-group">
+
+                    <label for="bathrooms">
+                        Number of Bathrooms
+                    </label>
+
+                    <input
+                        type="number"
+                        id="bathrooms"
+                        name="bathrooms"
+                        placeholder="Example: 2"
+                        step="any"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Living Area -->
+
+                <div class="input-group">
+
+                    <label for="sqft_living">
+                        Living Area (sqft)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="sqft_living"
+                        name="sqft_living"
+                        placeholder="Example: 1800"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Lot Area -->
+
+                <div class="input-group">
+
+                    <label for="sqft_lot">
+                        Lot Area (sqft)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="sqft_lot"
+                        name="sqft_lot"
+                        placeholder="Example: 5000"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Floors -->
+
+                <div class="input-group">
+
+                    <label for="floors">
+                        Number of Floors
+                    </label>
+
+                    <input
+                        type="number"
+                        id="floors"
+                        name="floors"
+                        placeholder="Example: 2"
+                        step="any"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Waterfront -->
+
+                <div class="input-group">
+
+                    <label for="waterfront">
+                        Waterfront
+                    </label>
+
+                    <select
+                        id="waterfront"
+                        name="waterfront"
+                        required
+                    >
+
+                        <option value="">
+                            Select Option
+                        </option>
+
+                        <option value="0">
+                            No
+                        </option>
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- View -->
+
+                <div class="input-group">
+
+                    <label for="view">
+                        View Rating
+                    </label>
+
+                    <input
+                        type="number"
+                        id="view"
+                        name="view"
+                        placeholder="0 - 4"
+                        min="0"
+                        max="4"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Condition -->
+
+                <div class="input-group">
+
+                    <label for="condition">
+                        House Condition
+                    </label>
+
+                    <input
+                        type="number"
+                        id="condition"
+                        name="condition"
+                        placeholder="1 - 5"
+                        min="0"
+                        max="5"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Sqft Above -->
+
+                <div class="input-group">
+
+                    <label for="sqft_above">
+                        Above Ground Area
+                    </label>
+
+                    <input
+                        type="number"
+                        id="sqft_above"
+                        name="sqft_above"
+                        placeholder="Example: 1500"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Basement -->
+
+                <div class="input-group">
+
+                    <label for="sqft_basement">
+                        Basement Area
+                    </label>
+
+                    <input
+                        type="number"
+                        id="sqft_basement"
+                        name="sqft_basement"
+                        placeholder="Example: 300"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Year Built -->
+
+                <div class="input-group">
+
+                    <label for="yr_built">
+                        Year Built
+                    </label>
+
+                    <input
+                        type="number"
+                        id="yr_built"
+                        name="yr_built"
+                        placeholder="Example: 2005"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Year Renovated -->
+
+                <div class="input-group">
+
+                    <label for="yr_renovated">
+                        Year Renovated
+                    </label>
+
+                    <input
+                        type="number"
+                        id="yr_renovated"
+                        name="yr_renovated"
+                        placeholder="0 if never renovated"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- City -->
+
+                <div class="input-group">
+
+                    <label for="city">
+                        City
+                    </label>
+
+                    <select
+                        id="city"
+                        name="city"
+                        required
+                    >
+
+                        <option value="">
+                            Select City
+                        </option>
+
+                        <option value="0">Shoreline</option>
+                        <option value="1">Seattle</option>
+                        <option value="2">Kent</option>
+                        <option value="3">Bellevue</option>
+                        <option value="4">Redmond</option>
+                        <option value="5">Maple Valley</option>
+                        <option value="6">North Bend</option>
+                        <option value="7">Lake Forest Park</option>
+                        <option value="8">Sammamish</option>
+                        <option value="9">Auburn</option>
+                        <option value="10">Des Moines</option>
+                        <option value="11">Bothell</option>
+                        <option value="12">Federal Way</option>
+                        <option value="13">Kirkland</option>
+                        <option value="14">Issaquah</option>
+                        <option value="15">Woodinville</option>
+                        <option value="16">Normandy Park</option>
+                        <option value="17">Fall City</option>
+                        <option value="18">Renton</option>
+                        <option value="19">Carnation</option>
+                        <option value="20">Snoqualmie</option>
+                        <option value="21">Duvall</option>
+                        <option value="22">Burien</option>
+                        <option value="23">Covington</option>
+                        <option value="24">Inglewood-Finn Hill</option>
+                        <option value="25">Kenmore</option>
+                        <option value="26">Newcastle</option>
+                        <option value="27">Mercer Island</option>
+                        <option value="28">Black Diamond</option>
+                        <option value="29">Ravensdale</option>
+                        <option value="30">Clyde Hill</option>
+                        <option value="31">Algona</option>
+                        <option value="32">Skykomish</option>
+                        <option value="33">Tukwila</option>
+                        <option value="34">Vashon</option>
+                        <option value="35">Yarrow Point</option>
+                        <option value="36">SeaTac</option>
+                        <option value="37">Medina</option>
+                        <option value="38">Enumclaw</option>
+                        <option value="39">Snoqualmie Pass</option>
+                        <option value="40">Pacific</option>
+                        <option value="41">Beaux Arts Village</option>
+                        <option value="42">Preston</option>
+                        <option value="43">Milton</option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Country -->
+
+                <div class="input-group">
+
+                    <label for="country">
+                        Country
+                    </label>
+
+                    <select
+                        id="country"
+                        name="country"
+                        required
+                    >
+
+                        <option value="">
+                            Select Country
+                        </option>
+
+                        <option value="1">
+                            USA
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Button -->
+
+            <div class="button-container">
+
+                <button type="submit">
+                    🔮 &nbsp; Predict House Price
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+        <!-- Error -->
+
+        {% if error is defined %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Prediction Result -->
+
+        {% if result is defined %}
+
+        <div class="result">
+
+            <p>
+                Estimated House Price
+            </p>
+
+            <h2>
+                ${{ "{:,.0f}".format(result) }}
+            </h2>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Information -->
+
+        <div class="info">
+
+            <strong>About this Project</strong>
+
+            <p>
+                This application uses Multiple Linear Regression
+                to predict the estimated price of a house based on
+                property characteristics such as number of bedrooms,
+                bathrooms, living area, lot size, location, condition,
+                waterfront availability, and construction year.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer">
+
+        MLR Mini Project • House Price Prediction
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>
