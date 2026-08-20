@@ -4,294 +4,426 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>House Price Prediction</title>
 
-    
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Segoe UI", Arial, sans-serif;
-    }
+    <style>
 
-    body {
-        min-height: 100vh;
-        padding: 35px 20px;
-        background:
-            radial-gradient(circle at top left, #2563eb 0%, transparent 30%),
-            radial-gradient(circle at bottom right, #7c3aed 0%, transparent 30%),
-            linear-gradient(135deg, #020617, #0f172a, #1e1b4b);
-        color: white;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 1200px;
-        margin: auto;
-    }
-
-    .header {
-        text-align: center;
-        margin-bottom: 30px;
-        animation: appear 0.5s ease;
-    }
-
-    .header h1 {
-        font-size: 40px;
-        line-height: 1.15;
-        margin-bottom: 12px;
-        background: linear-gradient(90deg, #ffffff, #93c5fd, #c4b5fd);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .header p {
-        color: #cbd5e1;
-        font-size: 16px;
-        line-height: 1.7;
-    }
-
-    .card {
-        background: rgba(255, 255, 255, 0.07);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 28px;
-        padding: 40px 45px;
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
-        animation: appear 0.6s ease;
-    }
-
-    .section-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 25px;
-        color: #93c5fd;
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .section-title::before {
-        content: "";
-        width: 4px;
-        height: 20px;
-        border-radius: 5px;
-        background: linear-gradient(#3b82f6, #8b5cf6);
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        column-gap: 18px;
-        row-gap: 16px;
-    }
-
-    .input-group {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .input-group label {
-        display: block;
-        margin-bottom: 7px;
-        color: #cbd5e1;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .input-group input,
-    .input-group select {
-        width: 100%;
-        height: 45px;
-        padding: 0 14px;
-        border-radius: 11px;
-        border: 1px solid #334155;
-        outline: none;
-        background: rgba(30, 41, 59, 0.85);
-        color: white;
-        font-size: 14px;
-        transition: all 0.25s ease;
-    }
-
-    .input-group input::placeholder {
-        color: #64748b;
-    }
-
-    .input-group input:hover,
-    .input-group select:hover {
-        border-color: #475569;
-    }
-
-    .input-group input:focus,
-    .input-group select:focus {
-        border-color: #60a5fa;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.13);
-        background: rgba(30, 41, 59, 1);
-        transform: translateY(-1px);
-    }
-
-    .input-group select option {
-        background: #0f172a;
-        color: white;
-    }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    input[type=number] {
-        appearance: textfield;
-        -moz-appearance: textfield;
-    }
-
-    .button-container {
-        margin-top: 24px;
-        text-align: center;
-    }
-
-    button {
-        width: 100%;
-        height: 50px;
-        border: none;
-        border-radius: 13px;
-        background: linear-gradient(135deg, #2563eb, #7c3aed);
-        color: white;
-        font-size: 15px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
-    }
-
-    button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4);
-    }
-
-    button:active {
-        transform: translateY(0);
-    }
-
-    .result {
-        margin-top: 24px;
-        padding: 22px;
-        border-radius: 17px;
-        text-align: center;
-        background: linear-gradient(
-            135deg,
-            rgba(34, 197, 94, 0.10),
-            rgba(59, 130, 246, 0.12)
-        );
-        border: 1px solid rgba(96, 165, 250, 0.25);
-        animation: appear 0.5s ease;
-    }
-
-    .result p {
-        color: #94a3b8;
-        font-size: 13px;
-        margin-bottom: 5px;
-    }
-
-    .result h2 {
-        font-size: 36px;
-        font-weight: 800;
-        background: linear-gradient(90deg, #60a5fa, #a78bfa);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .error {
-        margin-top: 20px;
-        padding: 16px;
-        text-align: center;
-        border-radius: 13px;
-        background: rgba(239, 68, 68, 0.12);
-        border: 1px solid rgba(248, 113, 113, 0.25);
-        color: #fecaca;
-        animation: appear 0.5s ease;
-    }
-
-    .info {
-        margin-top: 24px;
-        padding: 20px;
-        border-radius: 17px;
-        background: rgba(15, 23, 42, 0.55);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #cbd5e1;
-        line-height: 1.7;
-    }
-
-    .info strong {
-        display: block;
-        margin-bottom: 8px;
-        color: #93c5fd;
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-    }
-
-    .info p {
-        font-size: 13px;
-    }
-
-    .footer {
-        text-align: center;
-        margin-top: 18px;
-        color: #64748b;
-        font-size: 11px;
-    }
-
-    @keyframes appear {
-        from {
-            opacity: 0;
-            transform: translateY(12px);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @media (max-width: 950px) {
-        .form-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .card {
-            padding: 40px;
-        }
-    }
-
-    @media (max-width: 600px) {
         body {
-            padding: 15px;
+            min-height: 100vh;
+            padding: 35px 20px;
+
+            background:
+                radial-gradient(circle at top left, #2563eb 0%, transparent 30%),
+                radial-gradient(circle at bottom right, #7c3aed 0%, transparent 30%),
+                linear-gradient(135deg, #020617, #0f172a, #1e1b4b);
+
+            color: white;
         }
 
-        .card {
-            padding: 30px 22px;
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: appear 0.5s ease;
         }
 
         .header h1 {
-            font-size: 32px;
+            font-size: 40px;
+            line-height: 1.15;
+            margin-bottom: 12px;
+
+            background: linear-gradient(
+                90deg,
+                #ffffff,
+                #93c5fd,
+                #c4b5fd
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 28px;
+            padding: 40px 45px;
+
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+
+            animation: appear 0.6s ease;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-bottom: 25px;
+
+            color: #93c5fd;
+            font-size: 13px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-title::before {
+            content: "";
+
+            width: 4px;
+            height: 20px;
+
+            border-radius: 5px;
+
+            background: linear-gradient(
+                #3b82f6,
+                #8b5cf6
+            );
         }
 
         .form-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
 
+            column-gap: 18px;
+            row-gap: 16px;
+        }
+
+        .input-group {
+            width: 100%;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group select {
+
+            width: 100%;
+            height: 45px;
+
+            padding: 0 14px;
+
+            border-radius: 11px;
+            border: 1px solid #334155;
+
+            outline: none;
+
+            background: rgba(30, 41, 59, 0.85);
+            color: white;
+
+            font-size: 14px;
+
+            transition: all 0.25s ease;
+        }
+
+        .input-group input::placeholder {
+            color: #64748b;
+        }
+
+        .input-group input:hover,
+        .input-group select:hover {
+            border-color: #475569;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+
+            border-color: #60a5fa;
+
+            box-shadow:
+                0 0 0 3px rgba(59, 130, 246, 0.13);
+
+            background: rgba(30, 41, 59, 1);
+
+            transform: translateY(-1px);
+        }
+
+        .input-group select option {
+            background: #0f172a;
+            color: white;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .button-container {
+
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        button {
+
+            width: 100%;
+            height: 50px;
+
+            border: none;
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #7c3aed
+                );
+
+            color: white;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: all 0.3s ease;
+
+            box-shadow:
+                0 10px 25px rgba(37, 99, 235, 0.25);
+        }
+
+        button:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 15px 35px rgba(37, 99, 235, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+
+            margin-top: 24px;
+
+            padding: 22px;
+
+            border-radius: 17px;
+
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(34, 197, 94, 0.10),
+                    rgba(59, 130, 246, 0.12)
+                );
+
+            border:
+                1px solid rgba(96, 165, 250, 0.25);
+
+            animation: appear 0.5s ease;
+        }
+
+        .result p {
+
+            color: #94a3b8;
+            font-size: 13px;
+
+            margin-bottom: 5px;
+        }
+
+        .result h2 {
+
+            font-size: 36px;
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #60a5fa,
+                    #a78bfa
+                );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .error {
+
+            margin-top: 20px;
+
+            padding: 20px;
+
+            text-align: center;
+
+            border-radius: 13px;
+
+            background:
+                rgba(239, 68, 68, 0.12);
+
+            border:
+                1px solid rgba(248, 113, 113, 0.35);
+
+            color: #fecaca;
+
+            animation: appear 0.5s ease;
+        }
+
+        .error h3 {
+
+            color: #fca5a5;
+
+            font-size: 20px;
+
+            margin-bottom: 8px;
+        }
+
+        .error p {
+
+            color: #fecaca;
+
+            font-size: 13px;
+        }
+
+        .info {
+
+            margin-top: 24px;
+
+            padding: 20px;
+
+            border-radius: 17px;
+
+            background:
+                rgba(15, 23, 42, 0.55);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.08);
+
+            color: #cbd5e1;
+
+            line-height: 1.7;
+        }
+
+        .info strong {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #93c5fd;
+
+            font-size: 14px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.8px;
+        }
+
+        .info p {
+            font-size: 13px;
+        }
+
+        .footer {
+
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+        @keyframes appear {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(12px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+        @media (max-width: 950px) {
+
+            .form-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .card {
+
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 30px 22px;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
 
 </head>
 
@@ -360,6 +492,7 @@
                         id="bedrooms"
                         name="bedrooms"
                         placeholder="Example: 3"
+                        min="0"
                         step="any"
                         required
                     >
@@ -380,6 +513,7 @@
                         id="bathrooms"
                         name="bathrooms"
                         placeholder="Example: 2"
+                        min="0"
                         step="any"
                         required
                     >
@@ -400,6 +534,7 @@
                         id="sqft_living"
                         name="sqft_living"
                         placeholder="Example: 1800"
+                        min="0"
                         required
                     >
 
@@ -419,6 +554,7 @@
                         id="sqft_lot"
                         name="sqft_lot"
                         placeholder="Example: 5000"
+                        min="0"
                         required
                     >
 
@@ -438,6 +574,7 @@
                         id="floors"
                         name="floors"
                         placeholder="Example: 2"
+                        min="0"
                         step="any"
                         required
                     >
@@ -531,6 +668,7 @@
                         id="sqft_above"
                         name="sqft_above"
                         placeholder="Example: 1500"
+                        min="0"
                         required
                     >
 
@@ -550,6 +688,7 @@
                         id="sqft_basement"
                         name="sqft_basement"
                         placeholder="Example: 300"
+                        min="0"
                         required
                     >
 
@@ -569,6 +708,7 @@
                         id="yr_built"
                         name="yr_built"
                         placeholder="Example: 2005"
+                        min="0"
                         required
                     >
 
@@ -588,6 +728,7 @@
                         id="yr_renovated"
                         name="yr_renovated"
                         placeholder="0 if never renovated"
+                        min="0"
                         required
                     >
 
@@ -712,7 +853,11 @@
 
         <div class="error">
 
-            {{ error }}
+            <h3>⚠️ Invalid House Value</h3>
+
+            <p>
+                {{ error }}
+            </p>
 
         </div>
 
@@ -723,17 +868,36 @@
 
         {% if result is defined %}
 
-        <div class="result">
+            {% if result < 0 %}
 
-            <p>
-                Estimated House Price
-            </p>
+            <div class="error">
 
-            <h2>
-                ${{ "{:,.0f}".format(result) }}
-            </h2>
+                <h3>
+                    ⚠️ House Values Are Invalid
+                </h3>
 
-        </div>
+                <p>
+                    The predicted house value is negative.
+                    Please enter valid property details.
+                </p>
+
+            </div>
+
+            {% else %}
+
+            <div class="result">
+
+                <p>
+                    Estimated House Price
+                </p>
+
+                <h2>
+                    ${{ "{:,.0f}".format(result) }}
+                </h2>
+
+            </div>
+
+            {% endif %}
 
         {% endif %}
 
@@ -742,7 +906,9 @@
 
         <div class="info">
 
-            <strong>About this Project</strong>
+            <strong>
+                About this Project
+            </strong>
 
             <p>
                 This application uses Multiple Linear Regression
@@ -770,4 +936,3 @@
 </body>
 
 </html>
-```
