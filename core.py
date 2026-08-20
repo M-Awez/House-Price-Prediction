@@ -28,6 +28,7 @@ class MLR:
         except Exception as e:
             er_type,er_msg,er_line=sys.exc_info()
             print(f"Error in line no : {er_line.tb_lineno} : due to : {er_msg} : reason : {er_type}")
+            
     def split(self):
         try:
             self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, train_size=0.8,
@@ -88,12 +89,13 @@ class MLR:
             er_type, er_msg, er_line = sys.exc_info()
             print(f"Error in line no : {er_line.tb_lineno} : due to : {er_msg} : reason : {er_type}")
 
-obj=MLR()
-X_train,X_test,y_train,y_test = obj.split()
-train_prds=obj.train()
-test_prds=obj.test()
-obj.accuracy_loss(y_train,train_prds)
-obj.accuracy_loss(y_test,test_prds)
-obj.custom_inputs()
-obj.saving_the_file()
+if __name__ == "__main__":
+    obj=MLR()
+    X_train,X_test,y_train,y_test = obj.split()
+    train_prds=obj.train()
+    test_prds=obj.test()
+    obj.accuracy_loss(y_train,train_prds)
+    obj.accuracy_loss(y_test,test_prds)
+    obj.custom_inputs()
+    obj.saving_the_file()
 
